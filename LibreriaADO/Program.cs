@@ -65,6 +65,7 @@ namespace LibreriaADO
 
                         break;
                     case "4":
+                        DbManagerConnectedMode.GetLibriCartacei();
                         Console.Write("indica il titolo del libro: ");
                         string titolo = Console.ReadLine();
                         Console.Write("Indica la nuova quantità: ");
@@ -84,6 +85,7 @@ namespace LibreriaADO
                         Console.WriteLine("INSERISCI UN NUOVO LIBRO");
                         if (risposta == "si")
                         {
+                            
                             Console.WriteLine("INSERISCI UN NUOVO LIBRO CARTACEO");
                             Console.Write("Titolo: ");
                             string titolO = Console.ReadLine();

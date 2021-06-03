@@ -214,7 +214,7 @@ namespace LibreriaADO
                 connection.Close();
             }
         }
-        public static void MidificaQuantitaLibri(int quantita, string titolo)
+        public static void ModificaQuantitaLibri(int quantita, string titolo)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -223,34 +223,42 @@ namespace LibreriaADO
                 Selectcommand.Connection = connection;
                 Selectcommand.CommandType = System.Data.CommandType.Text;
 
-                Selectcommand.CommandText = "update dbo.LibriCartaci set Quantita = @Quantita where Titolo = @Titolo";
+                Selectcommand.CommandText = "select * from dbo.LibriCartaci";
+                SqlCommand updateCommand = new SqlCommand();
+                updateCommand.Connection = connection;
+                updateCommand.CommandType = System.Data.CommandType.Text;
+
                 SqlCommand insertCommand = new SqlCommand();
                 insertCommand.Connection = connection;
                 insertCommand.CommandType = System.Data.CommandType.Text;
 
-
                 insertCommand.CommandText = "update dbo.LibriCartaci set Quantita = @Quantita where Titolo = @Titolo";
-                insertCommand.Parameters.AddWithValue("@Titolo", titolo);
-                insertCommand.Parameters.AddWithValue("@Quantita", quantita);
+                insertCommand.Parameters.Add("@Titolo", System.Data.SqlDbType.NVarChar,50,"Titolo");
+                insertCommand.Parameters.Add("@Quantita",System.Data.SqlDbType.Int,30,"Quantita");
 
                 DataSet dataSet = new DataSet();
 
                 SqlDataAdapter adapter = new SqlDataAdapter();
                 adapter.SelectCommand = Selectcommand;
+                adapter.UpdateCommand = updateCommand;
                 adapter.Fill(dataSet, "LibriCartacei");
+                int count=0;
+                DataTable dt = dataSet.Tables["LibriCartacei"];
 
-                DataColumn dt = dataSet.Tables["LibriCartacei"].Columns["Quantita"];
-                DataColumn dtt = dataSet.Tables["LibriCartacei"].Columns["Titolo"];
-                DataRelation relation = new DataRelation(titolo, dt,dtt);
-                   
-                dataSet.Relations.Add(relation);
-
-
-                //dataSet.Tables["LibriCartacei"].Columns.Add;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if(Convert.ToString(dr["Titolo"])==titolo)
+                    {
+                        break;
+                    }
+                    count++;
+                }
+                dt.Rows[count]["Quantita"] = quantita;
                 adapter.Update(dataSet, "LibriCartacei");
 
                 connection.Close();
             }
         }
+
     }
 }

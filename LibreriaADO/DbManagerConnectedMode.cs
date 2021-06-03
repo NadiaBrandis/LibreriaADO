@@ -8,14 +8,14 @@ namespace LibreriaADO
 {
     class DbManagerConnectedMode
     {
-        public List<LibriCartacei> TuttiLibriCartacei =DbManagerConnectedMode.GetLibriCartacei();
+        public List<LibriCartacei> TuttiLibriCartacei = DbManagerConnectedMode.GetLibriCartacei();
         const string connectionString = @"Data Source= (localdb)\MSSQLLocalDB;" +
                                          "Initial Catalog = Libreria;" + "integrated Security=true;";
 
         public static List<LibriCartacei> GetLibriCartacei()
         {
             List<LibriCartacei> LibriC = new List<LibriCartacei>();
-            
+
 
             SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
@@ -27,7 +27,7 @@ namespace LibreriaADO
             command.CommandType = System.Data.CommandType.Text;
             // comando
             command.CommandText = "select * from dbo.LibriCartacei";
-            
+
             SqlDataReader reader = command.ExecuteReader();
 
             while (reader.Read())
@@ -38,11 +38,11 @@ namespace LibreriaADO
                 var numeroPagine = reader[3];
                 var quantita = reader[4];
                 var isbn = reader[5];
-                LibriCartacei libro = new LibriCartacei((string)titolo,(string) autore, (string)isbn,(int) numeroPagine, (int)quantita);
+                LibriCartacei libro = new LibriCartacei((string)titolo, (string)autore, (string)isbn, (int)numeroPagine, (int)quantita);
                 LibriC.Add(libro);
-                
+
                 Console.WriteLine($"{id} - Titolo: {titolo}, Autore: {autore}, NUmero di Pagine: {numeroPagine}, Quantità in magazzino: {quantita}, Codice: {isbn}");
-                
+
 
             }
             connection.Close();
@@ -73,9 +73,9 @@ namespace LibreriaADO
                 var durata = reader[3];
 
                 var isbn = reader[4];
-                AudioLibri Audio= new AudioLibri((string)titolo, (string)autore, (string)isbn,(int)durata);
+                AudioLibri Audio = new AudioLibri((string)titolo, (string)autore, (string)isbn, (int)durata);
                 LibriA.Add(Audio);
-                
+
 
                 Console.WriteLine($"{id} - Titolo: {titolo}, Autore: {autore}, Durata: {durata},Codice: {isbn}");
 
@@ -99,10 +99,10 @@ namespace LibreriaADO
                 command1.CommandType = System.Data.CommandType.Text;
                 // comando
                 command1.CommandText = "select * from dbo.LibriCartacei";
-               
+
 
                 SqlDataReader reader1 = command1.ExecuteReader();
-              
+
                 while (reader1.Read())
                 {
                     var titolo = reader1[1];
@@ -113,7 +113,7 @@ namespace LibreriaADO
 
                 }
 
-               
+
                 connection1.Close();
             }
             {
@@ -127,9 +127,9 @@ namespace LibreriaADO
                 command2.CommandType = System.Data.CommandType.Text;
                 // comando
                 command2.CommandText = "select * from dbo.AudioLibri";
-              
+
                 SqlDataReader reader2 = command2.ExecuteReader();
-              
+
                 while (reader2.Read())
                 {
                     var titolo = reader2[1];
@@ -143,7 +143,7 @@ namespace LibreriaADO
             }
         }
 
-       public static void VisualizzaLibro(string tit)
+        public static void VisualizzaLibro(string tit)
         {
             {
                 SqlConnection connection1 = new SqlConnection(connectionString);
@@ -159,7 +159,7 @@ namespace LibreriaADO
                 command1.Parameters.AddWithValue("@Titolo", tit);
 
                 SqlDataReader reader1 = command1.ExecuteReader();
-               
+
                 while (reader1.Read())
                 {
                     var titolo = reader1[1];
@@ -190,7 +190,7 @@ namespace LibreriaADO
                 command2.Parameters.AddWithValue("@Titolo", tit);
 
                 SqlDataReader reader2 = command2.ExecuteReader();
-                
+
                 while (reader2.Read())
                 {
                     var titolo = reader2[1];
@@ -205,7 +205,7 @@ namespace LibreriaADO
 
                 }
 
-              
+
 
 
                 connection2.Close();
@@ -229,9 +229,9 @@ namespace LibreriaADO
                 command.Parameters.AddWithValue("@Titolo", t);
                 command.Parameters.AddWithValue("@Autore", a);
                 command.Parameters.AddWithValue("@Durata", n);
-               
+
                 command.Parameters.AddWithValue("@ISBN", isbn);
-              
+
                 command.ExecuteNonQuery();
 
 
@@ -241,7 +241,7 @@ namespace LibreriaADO
             }
         }
 
-        public static void InserisciLibroCartaceo(string t,string a,int n,int q,string isbn)
+        public static void InserisciLibroCartaceo(string t, string a, int n, int q, string isbn)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -252,7 +252,7 @@ namespace LibreriaADO
                 // Definisco il tipo dell'input
                 command.CommandType = System.Data.CommandType.Text;
 
-              
+
 
                 command.CommandText = "insert into dbo.LibriCartacei values (@Titolo, @Autore, @NumeroPagine,@Quantita,@ISBN)";
                 command.Parameters.AddWithValue("@Titolo", t);
@@ -262,7 +262,7 @@ namespace LibreriaADO
                 command.Parameters.AddWithValue("@ISBN", isbn);
                 //
                 command.ExecuteNonQuery();
-              
+
 
 
 
@@ -270,62 +270,52 @@ namespace LibreriaADO
             }
         }
 
-       
+
 
         public static void ModificaMinuti(string t, int minuti)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
+
                 SqlCommand command = new SqlCommand();
-                // Associo la connection
                 command.Connection = connection;
-                // Definisco il tipo dell'input
                 command.CommandType = System.Data.CommandType.Text;
-
-
-                //update LibriCartacei set Quantita=7 where Titolo='I promessi sposi'
-                command.CommandText = "update dbo.AudioLibri  set Durata = @Durata where Titolo = @Titolo";
+                command.CommandText = "update dbo.AudioLibri set Durata = @Durata where Titolo = @Titolo";
                 command.Parameters.AddWithValue("@Titolo", t);
                 command.Parameters.AddWithValue("@Quantita", minuti);
 
-
                 command.ExecuteNonQuery();
-                //command.Dispose();
+
                 connection.Close();
             }
         }
 
-        public static void ModificaQuantita(string titolo,int quantita)
+        public static void ModificaQuantita(string titolo, int quantita)
         {
 
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open(); 
+                connection.Open();
+
                 SqlCommand command = new SqlCommand();
-                // Associo la connection
                 command.Connection = connection;
-                // Definisco il tipo dell'input
                 command.CommandType = System.Data.CommandType.Text;
-
-
-                //update LibriCartacei set Quantita=7 where Titolo='I promessi sposi'
-                command.CommandText = "update dbo.LibriCartaci set Quantita = @Quantita where Titolo = @Titolo";
+                command.CommandText = "update dbo.LibriCartacei set Quantita = @Quantita where Titolo = @Titolo";
                 command.Parameters.AddWithValue("@Titolo", titolo);
                 command.Parameters.AddWithValue("@Quantita", quantita);
 
-
                 command.ExecuteNonQuery();
-                //command.Dispose();
-                connection.Close(); 
+
+                connection.Close();
             }
         }
+
+
+
+
+
     }
-
-
-        
-
-    
 }
 
